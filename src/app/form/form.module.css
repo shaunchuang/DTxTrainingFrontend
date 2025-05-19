@@ -1,0 +1,907 @@
+body:has(.formContainer) {
+  background-color: #ffffff !important;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 標題欄樣式 */
+.header {
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.headerContent {
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1677ff;
+  margin: 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dateTime {
+  font-size: 0.875rem;
+  color: #666;
+  margin-right: 10px;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.iconButton:hover {
+  background-color: #f5f5f5;
+  color: #1677ff;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background-color: #ff4d4f;
+  border-radius: 50%;
+}
+
+.userMenu {
+  position: relative;
+}
+
+.userMenuButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.userMenuButton:hover {
+  background-color: #f5f5f5;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e6f7ff;
+  color: #1677ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownIcon {
+  width: 12px;
+  height: 12px;
+  color: #999;
+}
+
+.userDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 200px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.userDropdownHeader {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.userDropdownName {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.userDropdownRole {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.userDropdownContent {
+  padding: 8px 0;
+}
+
+.userDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.userDropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+.userDropdownIcon {
+  width: 14px;
+  height: 14px;
+  color: #666;
+}
+
+.userDropdownItemLogout {
+  color: #ff4d4f;
+}
+
+.userDropdownItemLogout:hover {
+  background-color: #fff1f0;
+}
+
+.headerBar {
+  width: 100%;
+  padding: 16px 20px;
+  background-color: #fff;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 修改步驟指示器在標題橫幅中的樣式 */
+.headerBar .stepIndicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.stepIndicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  z-index: 2;
+}
+
+.stepIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stepIcon svg {
+  width: 20px;
+  height: 20px;
+  color: #6c757d;
+}
+
+.step.active .stepIcon {
+  background-color: #00c853;
+}
+
+.step.active .stepIcon svg {
+  color: white;
+}
+
+.step span {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.step.active span {
+  color: #00c853;
+  font-weight: 600;
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  background-color: #e9ecef;
+  position: relative;
+  max-width: 100px;
+  z-index: 1;
+  margin-top: -20px; /* 將步驟線向上調整，使其與圖標中心對齊 */
+}
+
+.stepLine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: #00c853;
+  transition: width 0.3s ease-in-out;
+}
+
+/* 直接使用屬性選擇器基於當前步驟設置線條顏色 */
+/* 當步驟為2、3或4時，第一條線變綠色 */
+[data-step="2"] .stepLine:nth-of-type(2)::before,
+[data-step="3"] .stepLine:nth-of-type(2)::before,
+[data-step="4"] .stepLine:nth-of-type(2)::before {
+  width: 100%;
+}
+
+/* 當步驟為3或4時，第二條線變綠色 */
+[data-step="3"] .stepLine:nth-of-type(4)::before,
+[data-step="4"] .stepLine:nth-of-type(4)::before {
+  width: 100%;
+}
+
+/* 當步驟為4時，第三條線變綠色 */
+[data-step="4"] .stepLine:nth-of-type(6)::before {
+  width: 100%;
+}
+
+/* 確保表單容器與頂部標題欄配合正確 */
+.formContainer {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0.1, 0.1);
+}
+
+.formContent {
+  margin-top: 0; /* 因為已經移除了原始步驟指示器，不需要額外的上邊距 */
+}
+
+/* 表單內容 */
+.formStep {
+  margin-bottom: 30px;
+}
+
+.formStep h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+  font-weight: 600;
+}
+
+.formGroup {
+  margin-bottom: 25px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #212121; /* 更深的文字顏色 */
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="tel"],
+.formGroup input[type="email"],
+.formGroup input[type="password"],
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  border-color: #00c853;
+  box-shadow: 0 0 0 2px rgba(0, 200, 83, 0.1);
+  outline: none;
+}
+
+/* 日期輸入組 */
+.dateInputGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dateInputGroup select {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.dateInputGroup span {
+  margin: 0 2px;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* 單選按鈕組 */
+.radioGroup {
+  display: flex;
+  gap: 20px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.radioLabel input {
+  margin-right: 8px;
+}
+
+/* 複選框組 */
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.checkboxLabel input {
+  margin-right: 8px;
+}
+
+/* 其他輸入框 */
+.otherInput {
+  width: 100%;
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.otherInput input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* 表單段落 */
+.formSection {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.appointmentCalendar h3,
+.doctorSelection h3,
+.formSection h3,
+.scaleCompletionInfo p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 15px;
+}
+
+/* 加深健康資料填寫部分的選項字體顏色 */
+.checkboxLabel span {
+  color: #333333;
+  font-weight: 500;
+}
+
+/* 進一步加深創傷後壓力症評量表的文字顏色 */
+.scaleCompletionInfo p {
+  margin: 0;
+  color: #333333;
+  font-weight: 500;
+}
+
+.scaleCompletionInfo p span {
+  font-weight: 700;
+  color: #00a040;
+}
+
+/* 加深日期及時間部分的文字顏色 */
+.timeSlotSection h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+/* 加深選擇醫師部分的文字顏色 */
+.doctorInfo h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #212121;
+  font-weight: 600;
+}
+
+/* 量表樣式 */
+.scaleContainer {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.scaleInstructions {
+  margin-bottom: 20px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.scaleItem {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.scaleNumber {
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 12px;
+  color: #212121;
+  font-size: 16px;
+}
+
+.scaleStatement {
+  font-weight: 500;
+  color: #212121; /* 更深的量表問題顏色 */
+  margin-bottom: 12px;
+}
+
+.scaleRating {
+  margin-top: 10px;
+}
+
+.scaleLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #424242; /* 更深的量表標籤顏色 */
+  font-weight: 500;
+}
+
+.scaleRadioLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.scaleRadioLabel input {
+  margin-bottom: 5px;
+}
+
+.scaleRadioLabel span {
+  font-weight: 600;
+  color: #333333;
+}
+
+.scaleSlider {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 12px 10px;
+}
+
+.scaleCompletionInfo {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+
+.scaleCompletionInfo p {
+  margin: 0;
+}
+
+.scaleCompletionInfo p span {
+  font-weight: bold;
+  color: #00c853;
+}
+
+.completionStatus {
+  display: flex;
+  align-items: center;
+  color: #00c853;
+}
+
+.completionStatus svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+}
+
+/* 警告消息 */
+.formAlert {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+  border-radius: 4px;
+  margin-bottom: 25px;
+}
+
+.formAlert svg {
+  width: 24px;
+  height: 24px;
+  color: #ff9800;
+  margin-right: 12px;
+}
+
+.formAlert p {
+  margin: 0;
+  color: #7d4900;
+}
+
+/* 按鈕 - 使用更亮的漸層色 */
+.formActions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.prevButton, .nextButton, .submitButton {
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.prevButton {
+  background: linear-gradient(135deg, #78909c, #546e7a);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.prevButton:hover {
+  background: linear-gradient(135deg, #90a4ae, #607d8b);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nextButton {
+  background: linear-gradient(135deg, #4db6ac, #009688);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nextButton:hover {
+  background: linear-gradient(135deg, #80cbc4, #26a69a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.submitButton {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #81c784, #4caf50);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 醫師選擇 */
+.doctorSelection {
+  margin-bottom: 40px;
+}
+
+.doctorList {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.doctorCard {
+  border: 2px solid #eee;
+  border-radius: 10px;
+  padding: 15px;
+  width: 180px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.doctorCard.selected {
+  border-color: #00c853;
+  background-color: rgba(0, 200, 83, 0.05);
+}
+
+.doctorCard input {
+  position: absolute;
+  opacity: 0;
+}
+
+.doctorImg {
+  margin-bottom: 10px;
+}
+
+.doctorImg img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.doctorInfo h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #212121;
+  font-weight: 600;
+}
+
+/* 日曆 */
+.appointmentCalendar {
+  margin-bottom: 40px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.calendarHeader h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #212121;
+  margin: 0;
+}
+
+.calendarNav {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.calendarNav:hover {
+  color: #26a69a;
+}
+
+.calendarGrid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendarRow {
+  display: flex;
+  width: 100%;
+}
+
+.calendarHeaderCell, .calendarCell {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+}
+
+.calendarHeaderCell {
+  font-weight: 600;
+  color: #212121; /* 更深的日曆標題顏色 */
+}
+
+.calendarCell {
+  height: 50px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px;
+  color: #333333;
+  font-weight: 600;
+}
+
+.calendarCell:hover {
+  background-color: #e8f5e9;
+  border-color: #4caf50;
+}
+
+.calendarCell.disabled {
+  background-color: #fafafa;
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+/* 時間選擇 */
+.timeSlots {
+  margin-top: 20px;
+  display: flex;
+  gap: 40px;
+}
+
+.timeSlotSection {
+  flex: 1;
+}
+
+.timeSlotGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.timeSlot {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #333333; /* 更深的時間選項顏色 */
+  font-weight: 500;
+}
+
+.timeSlot:hover {
+  background-color: #f1f8e9;
+}
+
+.timeSlot.selected {
+  background-color: #00c853;
+  color: white;
+  border-color: #00c853;
+}
+
+/* 地址部分 */
+.addressSection, .emergencyContactSection {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.emergencyContactSection h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 加深表單中所有 placeholder 文字的顏色 */
+.formGroup input::placeholder,
+.formGroup textarea::placeholder,
+.otherInput input::placeholder {
+  color: #666666;
+  opacity: 1; /* Firefox 需要這個 */
+}
+
+/* 加深量表題號的顏色 */
+.scaleNumber {
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 12px;
+  color: #212121;
+  font-size: 16px;
+}
+
+
+.otherInput input::placeholder {
+  color: #666666;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .headerBar .stepIndicator {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 10px;
+    justify-content: flex-start;
+  }
+  
+  .step {
+    width: auto;
+    min-width: 100px;
+    margin: 0 5px;
+  }
+  
+  .stepLine {
+    max-width: 40px;
+  }
+  
+  .step span {
+    font-size: 12px;
+  }
+}

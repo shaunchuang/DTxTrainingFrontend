@@ -1,0 +1,352 @@
+/* 標籤頁基本樣式 */
+.container {
+  max-width: 100%;  /* 修改為100%以充分利用可用空間 */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tabHeader {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.tabButton.active {
+  color: #1677ff;
+  border-bottom: 2px solid #1677ff;
+}
+
+.tabContent {
+  min-height: 400px;
+}
+
+.tabPanel {
+  padding: 20px 0;
+}
+
+/* 表單樣式 */
+.form {
+  background-color: #f5f9ff;  /* 輕微改變背景色調 */
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);  /* 添加輕微陰影 */
+  border: 1px solid #e6f0ff;  /* 添加邊框 */
+}
+
+.form h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #222;  /* 深化標題顏色 */
+  font-size: 18px;
+  font-weight: 600;  /* 增強標題的粗細 */
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 10px;
+}
+
+.formGroup {
+  margin-bottom: 20px;  /* 增加下方間距 */
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;  /* 增加與輸入框的間距 */
+  font-weight: 500;
+  color: #333;  /* 深化標籤顏色 */
+  font-size: 15px;  /* 略微增加字體大小 */
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="password"],  /* 增加密碼輸入框 */
+.formGroup textarea,
+.formGroup select {  /* 增加選擇下拉框 */
+  width: 100%;
+  padding: 10px 12px;  /* 稍微增加填充空間 */
+  border: 1px solid #ccd8e6;  /* 更改邊框顏色 */
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fff;  /* 確保白色背景 */
+}
+
+.formGroup input[type="text"]:focus,
+.formGroup input[type="email"]:focus,
+.formGroup input[type="password"]:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;  /* 增加間距 */
+  margin-top: 5px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #eaeaea;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox input {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox label {
+  margin-bottom: 0;
+  cursor: pointer;
+  font-weight: normal;
+  color: #444;  /* 稍微深化標籤顏色 */
+}
+
+.formActions {
+  margin-top: 25px;
+  display: flex;
+  gap: 12px;
+}
+
+.submitButton {
+  background-color: #1677ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;  /* 增加按鈕大小 */
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  font-size: 15px;
+}
+
+.submitButton:hover {
+  background-color: #0e5ecc;  /* 添加懸停效果 */
+}
+
+.submitButton:disabled {
+  background-color: #a0c2f8;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background-color: #f5f5f5;
+  color: #444;  /* 稍微深化文字顏色 */
+  border: 1px solid #ddd;
+  padding: 10px 20px;  /* 增加按鈕大小 */
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  font-size: 15px;
+}
+
+.cancelButton:hover {
+  background-color: #e6e6e6;  /* 添加懸停效果 */
+}
+
+/* 表格樣式 */
+.tableContainer {
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);  /* 添加輕微陰影 */
+}
+
+.tableContainer h3 {
+  margin-top: 0;
+  color: #222;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e8edf3;  /* 輕微改變邊框顏色 */
+}
+
+.table th,
+.table td {
+  padding: 14px 15px;  /* 增加單元格填充 */
+  text-align: left;
+  border-bottom: 1px solid #e8edf3;
+  color: #222;  /* 加深表格內文字顏色 */
+  font-size: 14.5px;  /* 略微增加字體大小 */
+}
+
+.table th {
+  background-color: #f0f4f8;  /* 更深的標題背景色 */
+  font-weight: 600;
+  color: #222;  /* 加深標題文字顏色 */
+}
+
+.table tr:hover {
+  background-color: #f5faff;  /* 更改懸停背景色 */
+}
+
+.table td {
+  font-weight: 450;  /* 稍微加粗表格內文字 */
+}
+
+.editButton {
+  background-color: #4bb543;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 4px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editButton:hover {
+  background-color: #429a3a;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.editButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton:hover {
+  background-color: #c2185b;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.deleteButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 增加錯誤提示、載入狀態和無數據樣式 */
+.errorMessage {
+  color: #e91e63;
+  margin-bottom: 15px;
+  padding: 12px;
+  background-color: #fdeff3;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.loading {
+  font-style: italic;
+  color: #666;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.noData {
+  text-align: center;
+  color: #555;
+  padding: 30px 0;
+  font-style: italic;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+  .checkboxGroup {
+    gap: 10px;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .submitButton, .cancelButton {
+    width: 100%;
+  }
+}
+
+/* 表格標題區域樣式 */
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: none; /* 移除底線 */
+  padding-bottom: 0; /* 移除底部內邊距 */
+}
+
+.tableHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.addButton {
+  background-color: #1677ff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.5px;
+}
+
+.addButton:hover {
+  background-color: #0e5ecc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.addButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.addButton:disabled {
+  background-color: #a0c2f8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
