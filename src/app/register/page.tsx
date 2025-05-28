@@ -120,7 +120,7 @@ export default function Register() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
       <div className="w-full max-w-lg p-10 space-y-8 bg-white rounded-xl shadow-xl">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-indigo-700">DTX 系統註冊</h1>
+          <h1 className="text-3xl font-bold text-indigo-700">DTx 系統註冊</h1>
           <p className="mt-2 text-sm text-gray-500">請填寫以下資訊進行註冊</p>
         </div>
 
@@ -342,7 +342,7 @@ export default function Register() {
 
         <div className="pt-5 mt-8 border-t border-gray-200">
           <p className="text-xs text-center text-gray-500">
-            © 2025 DTX系統. 版權所有
+            © 2025 工業技術研究院. 版權所有
           </p>
         </div>
       </div>

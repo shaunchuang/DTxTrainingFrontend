@@ -4,16 +4,16 @@
  */
 
 // API base URL - configurable via environment variables
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-
+export const CASEMGNT_API_BASE_URL = process.env.CASEMGNT_API_BASE_URL || '';
+export const STORE_API_BASE_URL = process.env.STORE_API_BASE_URL || '';
 // Security API endpoints
 export const SECURITY_API = {
-  LOGIN: `${API_BASE_URL}/security/api/login`,
-  LOGOUT: `${API_BASE_URL}/security/api/logout`,
-  REGISTER: `${API_BASE_URL}/security/api/register`,
-  CAPTCHA: `${API_BASE_URL}/security/api/captcha`,
-  USER: `${API_BASE_URL}/security/api/user`,
-  REFRESH_TOKEN: `${API_BASE_URL}/security/api/refresh-token`
+  LOGIN: `${CASEMGNT_API_BASE_URL}/security/api/login`,
+  LOGOUT: `${CASEMGNT_API_BASE_URL}/security/api/logout`,
+  REGISTER: `${CASEMGNT_API_BASE_URL}/security/api/register`,
+  CAPTCHA: `${CASEMGNT_API_BASE_URL}/security/api/captcha`,
+  USER: `${CASEMGNT_API_BASE_URL}/security/api/user`,
+  REFRESH_TOKEN: `${CASEMGNT_API_BASE_URL}/security/api/refresh-token`
 };
 
 // JWT configuration

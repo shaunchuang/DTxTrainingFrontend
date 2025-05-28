@@ -337,7 +337,7 @@ export default function MultiStepFormPage() {
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerLeft}>
-            <h1 className={styles.headerTitle}>DTX 系統</h1>
+            <h1 className={styles.headerTitle}>DTx 系統</h1>
           </div>
           
           <div className={styles.headerRight}>

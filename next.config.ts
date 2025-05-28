@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/security/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7050'}/security/api/:path*`,
+        destination: `${process.env.CASEMGNT_API_BASE_URL || 'http://localhost:7001'}/security/api/:path*`,
       },
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7050'}/api/:path*`,
+        destination: `${process.env.CASEMGNT_API_BASE_URL || 'http://localhost:7001'}/api/:path*`,
       },
     ];
   },

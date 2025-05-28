@@ -6,7 +6,7 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import styles from "./userRoleManagement.module.css";
 
 // API 基礎路徑 - 使用與 .env.local 相同的環境變數名稱
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:7050';
+const API_BASE_URL = process.env.CASEMGNT_API_BASE_URL || 'http://localhost:7001';
 
 // 調试用的錯誤處理函數
 const handleFetchError = (err: any, operation: string) => {

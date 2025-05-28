@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DTX管理系統",
+  title: "DTx管理系統",
   description: "一個現代化的案件管理系統",
 };
 

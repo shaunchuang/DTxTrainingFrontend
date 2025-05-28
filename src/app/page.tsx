@@ -43,13 +43,14 @@ export default function Home() {
     setMessage({ text: "", type: "" });
 
     try {
+
       const response = await fetch(SECURITY_API.LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ account, password, captcha }),
-        credentials: "include", // 仍然保留以支持驗證碼會話
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -86,7 +87,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100">
       <div className="w-full max-w-md p-10 space-y-8 bg-white rounded-xl shadow-xl">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-indigo-700">DTX 系統</h1>
+          <h1 className="text-3xl font-bold text-indigo-700">DTx 系統</h1>
           <div className="mt-3 text-gray-600 font-medium text-lg">歡迎回來</div>
           <p className="mt-2 text-sm text-gray-500">請輸入您的帳號資訊進行登入</p>
         </div>
@@ -170,6 +171,7 @@ export default function Home() {
                 <div className="flex items-center">
                   {captchaUrl && (
                     <img
+                      crossOrigin="use-credentials"
                       src={captchaUrl}
                       alt="驗證碼"
                       className="h-12 border border-gray-300 rounded-lg shadow-sm"
@@ -215,7 +217,7 @@ export default function Home() {
 
         <div className="pt-5 mt-8 border-t border-gray-200">
           <p className="text-xs text-center text-gray-500">
-            © 2025 DTX系統. 版權所有
+            © 2025 工業技術研究院. 版權所有
           </p>
         </div>
       </div>

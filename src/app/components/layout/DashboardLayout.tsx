@@ -240,7 +240,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
         {/* 系統標題 */}
         <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex justify-between items-center`}>
           <div>
-            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'} ${!sidebarOpen && 'hidden'}`}>DTX 系統</h1>
+            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'} ${!sidebarOpen && 'hidden'}`}>DTx 系統</h1>
             {!sidebarOpen && (
               <div className="flex justify-center">
                 <span className="text-xl font-bold text-indigo-600">D</span>
