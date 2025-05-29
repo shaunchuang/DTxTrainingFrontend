@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 import { SECURITY_API } from "../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faKey, faEnvelope, faMobile, faUserPlus, faSync, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -21,8 +22,8 @@ export default function Register() {
     confirmPassword: "",
     captcha: ""
   });
-  
-  const [captchaUrl, setCaptchaUrl] = useState("");
+    const [captchaUrl, setCaptchaUrl] = useState("");
+  const [captchaLoading, setCaptchaLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
@@ -43,11 +44,18 @@ export default function Register() {
     if (name === "password" || name === "confirmPassword") {
       setPasswordError("");
     }
-  };
-
-  // 驗證碼刷新函數
-  const refreshCaptcha = () => {
-    setCaptchaUrl(`${SECURITY_API.CAPTCHA}?t=${new Date().getTime()}`);
+  };  // 驗證碼刷新函數
+  const refreshCaptcha = async () => {
+    setCaptchaLoading(true);
+    const timestamp = new Date().getTime();
+    setCaptchaUrl(`${SECURITY_API.CAPTCHA}?t=${timestamp}`);
+    // 清空驗證碼輸入框
+    setFormData(prev => ({ ...prev, captcha: "" }));
+    
+    // 等待圖片載入
+    setTimeout(() => {
+      setCaptchaLoading(false);
+    }, 500);
   };
 
   // 初始加載驗證碼
@@ -66,9 +74,7 @@ export default function Register() {
     }
     
     setIsLoading(true);
-    setMessage({ text: "", type: "" });
-
-    try {
+    setMessage({ text: "", type: "" });    try {
       const response = await fetch(SECURITY_API.REGISTER, {
         method: "POST",
         headers: {
@@ -82,7 +88,7 @@ export default function Register() {
           password: formData.password,
           captcha: formData.captcha
         }),
-        credentials: "include", // 仍然需要用於處理驗證碼會話
+        credentials: "include", // 確保發送會話 cookies
       });
 
       const data = await response.json();
@@ -96,18 +102,20 @@ export default function Register() {
         // 延遲跳轉到登入頁面
         setTimeout(() => {
           router.push("/");
-        }, 3000);
-      } else {
+        }, 3000);      } else {
         // 顯示後端返回的錯誤訊息
         setMessage({ 
           text: data.message || "註冊失敗，請檢查填寫的資訊", 
           type: "error" 
         });
-        refreshCaptcha();
-      }
-    } catch (error) {
+        // 如果是驗證碼錯誤，刷新驗證碼
+        if (data.message && data.message.includes("驗證碼")) {
+          refreshCaptcha();
+        }
+      }    } catch (error) {
+      console.error("註冊請求錯誤:", error);
       setMessage({ 
-        text: "無法連接到伺服器，請稍後再試", 
+        text: "無法連接到伺服器，請檢查網路連線並稍後再試", 
         type: "error" 
       });
       refreshCaptcha();
@@ -296,22 +304,43 @@ export default function Register() {
                     className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                     placeholder="請輸入驗證碼"
                   />
-                </div>
-                <div className="flex items-center">
-                  {captchaUrl && (
-                    <img
-                      src={captchaUrl}
-                      alt="驗證碼"
-                      className="h-12 border border-gray-300 rounded-lg shadow-sm"
-                    />
+                </div>                <div className="flex items-center">                  {captchaUrl && (
+                    <div className="relative">
+                      <Image
+                        crossOrigin="use-credentials"
+                        src={captchaUrl}
+                        alt="驗證碼"
+                        width={100}
+                        height={48}
+                        className="h-12 border border-gray-300 rounded-lg shadow-sm"
+                        onError={() => {
+                          console.error("驗證碼圖片載入失敗");
+                          setMessage({ 
+                            text: "驗證碼載入失敗，請重新整理", 
+                            type: "error" 
+                          });
+                        }}
+                      />
+                      {captchaLoading && (
+                        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
+                        </div>
+                      )}
+                    </div>
                   )}
                   <button
                     type="button"
                     onClick={refreshCaptcha}
-                    className="p-2 ml-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+                    disabled={captchaLoading}
+                    className={`p-2 ml-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 ${
+                      captchaLoading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                     title="刷新驗證碼"
                   >
-                    <FontAwesomeIcon icon={faSync} className="w-5 h-5" />
+                    <FontAwesomeIcon 
+                      icon={faSync} 
+                      className={`w-5 h-5 ${captchaLoading ? "animate-spin" : ""}`} 
+                    />
                   </button>
                 </div>
               </div>

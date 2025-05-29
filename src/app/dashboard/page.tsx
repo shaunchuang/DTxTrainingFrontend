@@ -1,14 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { withAuth } from "../utils/AuthContext";
-import DashboardLayout from "../components/layout/DashboardLayout";
 import { useAuth } from "../utils/AuthContext";
+import { useRouter } from "next/navigation";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
-function Dashboard() {
-  const { user } = useAuth();
+export default function Dashboard() {
+  const { user, loading, tokenVerified } = useAuth();
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    if (!loading && (!user || !tokenVerified)) {
+      router.replace('/');
+    }
+  }, [loading, user, tokenVerified, router]);
 
   // 更新時間
   useEffect(() => {
@@ -30,6 +37,18 @@ function Dashboard() {
     
     return () => clearInterval(timerId);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (!user || !tokenVerified) {
+    return null;
+  }
 
   // 週幾轉換為中文
   const getDayOfWeekChinese = (date: Date) => {
@@ -225,5 +244,3 @@ function Dashboard() {
     </DashboardLayout>
   );
 }
-
-export default withAuth(Dashboard);

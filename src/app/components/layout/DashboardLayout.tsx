@@ -5,11 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faHome, 
   faClipboardList, 
-  faUsers, 
-  faUserCog, 
-  faFileAlt, 
   faCog, 
-  faSignOutAlt,
   faBars,
   faBell,
   faUser,
@@ -18,7 +14,8 @@ import {
   faExchangeAlt,
   faChartBar,
   faMoon,
-  faSun
+  faSun,
+  faComments
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useAuth } from "../../utils/AuthContext";
@@ -66,57 +63,89 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
     return () => clearInterval(interval); // 清理計時器
   }, []);
   
-  // 主導航項目及子項目
-  const navigationItems = [
-    {
-      icon: faHome,
-      label: "平台首頁",
-      children: [
-        { label: "首頁總覽", path: "/dashboard" },
-        { label: "建立個案", path: "/createCase" },
-        { label: "預約掛號", path: "/appointment" }
-      ]
-    },
-    {
-      icon: faClipboardList,
-      label: "個案管理",
-      children: [
-        { label: "個案管理", path: "/caseMgnt" }
-      ]
-    },
-    {
-      icon: faExchangeAlt,
-      label: "資料交換",
-      children: [
-        { label: "健保申報管理", path: "/healthInsurance" },
-        { label: "長照申報管理", path: "/longTermCare" },
-        { label: "FHIR醫資交換", path: "/FhirExchange" }
-      ]
-    },
-    {
-      icon: faChartBar,
-      label: "報表管理",
-      children: [
-        { label: "檢測報告", path: "/examReport" },
-        { label: "基本報表", path: "/baseReport" },
-        { label: "單位指標", path: "/indicator" },
-        { label: "數位治療分析", path: "/dtxAnalysis" }
-      ]
-    },
-    {
-      icon: faCog,
-      label: "行政管理",
-      children: [
-        { label: "排程追蹤", path: "/trackTrace" },
-        { label: "角色用戶管理", path: "/userRoleManagement" },
-        { label: "其他設定管理", path: "/otherManagement" }
-      ]
+  // 檢查使用者是否為個案角色
+  const isPatient = () => {
+    return user?.roles?.some(role => role.alias === 'CASE') || false;
+  };
+  
+  // 根據角色返回不同的導航菜單
+  const getNavigationItems = () => {
+    if (isPatient()) {
+      // 個案用戶的導航菜單
+      return [
+        {
+          icon: faHome,
+          label: "平台首頁",
+          children: [
+            { label: "首頁總覽", path: "/dashboard" },
+            { label: "教案使用", path: "/trainingPlan" },
+            { label: "檢視紀錄", path: "/trainingRecord" }
+          ]
+        },
+        {
+          icon: faComments,
+          label: "協作溝通",
+          children: [
+            { label: "提問與回覆", path: "/chatroom" }
+          ]
+        }
+      ];
+    } else {
+      // 醫師、治療師、管理者的導航菜單（原有的）
+      return [
+        {
+          icon: faHome,
+          label: "平台首頁",
+          children: [
+            { label: "首頁總覽", path: "/dashboard" },
+            { label: "建立個案", path: "/createCase" },
+            { label: "預約掛號", path: "/appointment" }
+          ]
+        },
+        {
+          icon: faClipboardList,
+          label: "個案管理",
+          children: [
+            { label: "個案管理", path: "/caseMgnt" }
+          ]
+        },
+        {
+          icon: faExchangeAlt,
+          label: "資料交換",
+          children: [
+            { label: "健保申報管理", path: "/healthInsurance" },
+            { label: "長照申報管理", path: "/longTermCare" },
+            { label: "FHIR醫資交換", path: "/FhirExchange" }
+          ]
+        },
+        {
+          icon: faChartBar,
+          label: "報表管理",
+          children: [
+            { label: "檢測報告", path: "/examReport" },
+            { label: "基本報表", path: "/baseReport" },
+            { label: "單位指標", path: "/indicator" },
+            { label: "數位治療分析", path: "/dtxAnalysis" }
+          ]
+        },
+        {
+          icon: faCog,
+          label: "行政管理",
+          children: [
+            { label: "排程追蹤", path: "/trackTrace" },
+            { label: "角色用戶管理", path: "/userRoleManagement" },
+            { label: "其他設定管理", path: "/otherManagement" }
+          ]
+        }
+      ];
     }
-  ];
+  };
+  
+  // 獲取當前導航項目
+  const navigationItems = getNavigationItems();
   
   // 控制折疊狀態
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  
   // 初始化時展開當前路徑所在的主項目
   useEffect(() => {
     const newExpandedItems = {...expandedItems};
@@ -129,7 +158,8 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
     });
     
     setExpandedItems(newExpandedItems);
-  }, [pathname]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]); // expandedItems和navigationItems不應包含在依賴中以避免無限循環
   
   // 切換側邊欄顯示與否
   const toggleSidebar = () => {
@@ -337,7 +367,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
                     <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow-xl border z-20`}>
                       <div className="p-4 border-b border-gray-200">
                         <p className="text-sm font-medium">{user?.username || '使用者'}</p>
-                        <p className="text-xs text-gray-500">{user?.roles?.[0] || '一般用戶'}</p>
+                        <p className="text-xs text-gray-500">{user?.roles[0]?.description || '一般用戶'}</p>
                       </div>
                       <div className="py-2">
                         <button className={`w-full text-left px-4 py-2 text-sm ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>

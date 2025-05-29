@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { withAuth } from "../utils/AuthContext";
+import { useState, useEffect, useCallback, ChangeEvent, FormEvent } from "react";
+import { useAuth } from "../utils/AuthContext";
+import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import styles from "./userRoleManagement.module.css";
 
 // API 基礎路徑 - 使用與 .env.local 相同的環境變數名稱
-const API_BASE_URL = process.env.CASEMGNT_API_BASE_URL || 'http://localhost:7001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_CASEMGNT_API_BASE_URL || 'http://localhost:7001';
 
 // 調试用的錯誤處理函數
-const handleFetchError = (err: any, operation: string) => {
+const handleFetchError = (err: unknown, operation: string) => {
   console.error(`${operation} 錯誤:`, err);
   // 如果是 CORS 錯誤，提供更具體的信息
   if (err instanceof TypeError && err.message === 'Failed to fetch') {
@@ -68,8 +69,27 @@ interface UserCounts {
   [key: number]: number;
 }
 
-function UserRoleManagementPage() {
+export default function UserRoleManagementPage() {
+  const { user, loading, tokenVerified } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("user");
+
+  useEffect(() => {
+    if (!loading && (!user || !tokenVerified)) {
+      router.replace('/');
+    }
+  }, [loading, user, tokenVerified, router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+  if (!user || !tokenVerified) {
+    return null;
+  }
 
   return (
     <DashboardLayout pageTitle="角色使用者管理">
@@ -134,10 +154,9 @@ function UserManagementTab() {
       const response = await fetch(`${API_BASE_URL}/api/users`);
       if (!response.ok) {
         throw new Error('獲取使用者列表失敗');
-      }
-      const data = await response.json();
+      }      const data = await response.json();
       setUsers(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(handleFetchError(err, '獲取使用者列表'));
     } finally {
       setLoading(false);
@@ -152,12 +171,12 @@ function UserManagementTab() {
         throw new Error('獲取角色列表失敗');
       }
       const data = await response.json();
-      setAvailableRoles(data.map((role: any) => ({
+      setAvailableRoles(data.map((role: { id: number; roleName: string; alias: string }) => ({
         id: role.id,
         name: role.roleName,
         alias: role.alias
       })));
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(handleFetchError(err, '獲取角色列表'));
     }
   };
@@ -222,10 +241,9 @@ function UserManagementTab() {
         password: "",
         status: "ACTIVE",
         roleIds: []
-      });
-      setIsEditing(false);
+      });      setIsEditing(false);
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(handleFetchError(err, '提交使用者數據'));
     } finally {
       setLoading(false);
@@ -489,20 +507,14 @@ function RoleManagementTab() {
     id: "",
     roleName: "",
     alias: ""
-  });
-  const [isEditing, setIsEditing] = useState(false);
+  });  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userCounts, setUserCounts] = useState<UserCounts>({});
   const [showRoleForm, setShowRoleForm] = useState(false); // 控制表單顯示
 
-  // 獲取所有角色
-  useEffect(() => {
-    fetchRoles();
-  }, []);
-
   // 獲取角色列表
-  const fetchRoles = async () => {
+  const fetchRoles = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -520,9 +532,13 @@ function RoleManagementTab() {
     } catch (err: unknown) {
       setError(handleFetchError(err, '獲取角色列表'));
     } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(false);    }
+  }, []);
+
+  // 獲取所有角色
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
 
   // 獲取角色的使用者數量
   const fetchRoleUserCount = async (roleId: number) => {
@@ -778,5 +794,3 @@ function RoleManagementTab() {
     </div>
   );
 }
-
-export default withAuth(UserRoleManagementPage);

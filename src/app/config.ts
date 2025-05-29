@@ -4,8 +4,8 @@
  */
 
 // API base URL - configurable via environment variables
-export const CASEMGNT_API_BASE_URL = process.env.CASEMGNT_API_BASE_URL || '';
-export const STORE_API_BASE_URL = process.env.STORE_API_BASE_URL || '';
+export const CASEMGNT_API_BASE_URL = process.env.NEXT_PUBLIC_CASEMGNT_API_BASE_URL || '';
+export const STORE_API_BASE_URL = process.env.NEXT_PUBLIC_STORE_API_BASE_URL || '';
 // Security API endpoints
 export const SECURITY_API = {
   LOGIN: `${CASEMGNT_API_BASE_URL}/security/api/login`,

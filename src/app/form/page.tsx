@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faUser,
   faChevronDown,
-  faSignOutAlt,
-  faUserCircle,
-  faCog
+  faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../utils/AuthContext";
 import Swal from 'sweetalert2';
@@ -81,7 +80,6 @@ export default function MultiStepFormPage() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const [step, setStep] = useState(1);
-  const [darkMode, setDarkMode] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>('');
   const userDropdownRef = useRef<HTMLDivElement>(null);
@@ -189,13 +187,7 @@ export default function MultiStepFormPage() {
     };
   }, [userDropdownOpen]);
   
-  // 切換黑暗/明亮模式
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    // 這裡可以實際實現系統黑暗模式切換
-  };
-  
-  // 處理登出
+  // 切換黑暗/明亮模式  // 處理登出
   const handleLogout = () => {
     logout();
     router.push('/');
@@ -1222,9 +1214,8 @@ export default function MultiStepFormPage() {
                         value="doctor1"
                         checked={data.doctorChoice === 'doctor1'}
                         onChange={handleChange}
-                      />
-                      <div className={styles.doctorImg}>
-                        <img src="https://via.placeholder.com/150" alt="程那安 醫師" />
+                      />                      <div className={styles.doctorImg}>
+                        <Image src="https://via.placeholder.com/150" alt="程那安 醫師" width={150} height={150} />
                       </div>
                       <div className={styles.doctorInfo}>
                         <h4>程那安 醫師</h4>
@@ -1238,9 +1229,8 @@ export default function MultiStepFormPage() {
                         value="doctor2"
                         checked={data.doctorChoice === 'doctor2'}
                         onChange={handleChange}
-                      />
-                      <div className={styles.doctorImg}>
-                        <img src="https://via.placeholder.com/150" alt="林素惠 醫師" />
+                      />                      <div className={styles.doctorImg}>
+                        <Image src="https://via.placeholder.com/150" alt="林素惠 醫師" width={150} height={150} />
                       </div>
                       <div className={styles.doctorInfo}>
                         <h4>林素惠 醫師</h4>
@@ -1254,9 +1244,8 @@ export default function MultiStepFormPage() {
                         value="doctor3"
                         checked={data.doctorChoice === 'doctor3'}
                         onChange={handleChange}
-                      />
-                      <div className={styles.doctorImg}>
-                        <img src="https://via.placeholder.com/150" alt="黃英翔 醫師" />
+                      />                      <div className={styles.doctorImg}>
+                        <Image src="https://via.placeholder.com/150" alt="黃英翔 醫師" width={150} height={150} />
                       </div>
                       <div className={styles.doctorInfo}>
                         <h4>黃英翔 醫師</h4>

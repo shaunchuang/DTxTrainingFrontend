@@ -2,16 +2,27 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { JWT_CONFIG, SECURITY_API } from '../config';
+import { JWT_CONFIG, SECURITY_API, CASEMGNT_API_BASE_URL } from '../config';
 import { getToken, removeToken, getAuthHeaders } from './auth';
 
+interface Role {
+  id: number;
+  alias: string;
+  description: string;
+  // 你可根據後端 Role 結構擴充
+}
+
+// 對應後端 UserRoleDTO
 interface User {
   id: number;
   username: string;
   account: string;
   email: string;
-  status: string;
-  roles: string[];
+  telCell?: string;
+  steamId?: string;
+  createdTime?: string | Date;
+  status: string; // UserStatus 可細分型別
+  roles: Role[];
 }
 
 // 更新 AuthContextType 介面並將其提前
@@ -19,9 +30,9 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   tokenVerified: boolean;
-  login: (token: string, userData: any) => void;
+  login: (token: string, userData: User) => void;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<any>; // 修改返回類型以匹配實際實現
+  refreshUser: () => Promise<User | null>; // 修改返回類型以匹配實際實現
 }
 
 // 創建 Context 時提供正確的默認值，避免 undefined
@@ -38,9 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [tokenVerified, setTokenVerified] = useState(false);
-  const router = useRouter();
-
-  // 初始化認證狀態
+  const router = useRouter();  // 初始化認證狀態
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -53,25 +62,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // 暫時設置用戶資料，但不認為已驗證
             setUser(JSON.parse(storedUser));
           }
-          
-          // 驗證token有效性，等待結果完成
-          try {
-            const userData = await refreshUser();
-            if (userData) {
-              // token有效，設置驗證狀態
+            // 檢查 API URL 是否配置 - 在使用相對路徑進行代理請求的情況下不需要此檢查
+          if (!CASEMGNT_API_BASE_URL) {
+            console.warn("API URL not configured, skipping token verification");
+            // 如果沒有配置 API URL，在開發模式下允許使用存儲的用戶數據
+            if (storedUser && process.env.NODE_ENV === 'development') {
               setTokenVerified(true);
-            } else {
-              // token無效或過期，清除用戶資料
-              setUser(null);
-              removeToken();
-              localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
             }
-          } catch (err) {
-            console.warn("Could not refresh user data during init:", err);
-            // token驗證失敗，清除認證資訊
-            setUser(null);
-            removeToken();
-            localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
+          } else {
+            // 驗證token有效性，等待結果完成
+            try {
+              // 直接調用API而不是使用refreshUser以避免依賴問題
+              const response = await fetch(SECURITY_API.USER, {
+                headers: getAuthHeaders()
+              });
+
+              if (response.ok) {
+                const userData = await response.json();
+                localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
+                setUser(userData);
+                setTokenVerified(true);
+              } else {
+                // token無效或過期，清除用戶資料
+                setUser(null);
+                removeToken();
+                localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
+              }
+            } catch (err) {
+              console.warn("Could not refresh user data during init (API server may be down):", err);
+              // 在開發模式下，如果有存儲的用戶數據，允許離線使用
+              if (storedUser && process.env.NODE_ENV === 'development') {
+                console.info("Using offline mode with stored user data");
+                setTokenVerified(true);
+              } else {
+                // token驗證失敗，清除認證資訊
+                setUser(null);
+                removeToken();
+                localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
+              }
+            }
           }
         }
       } catch (error) {
@@ -86,10 +115,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initAuth();
-  }, []);
-
+  }, []); // 移除refreshUser依賴
   // 登入並設置用戶資訊
-  const login = (token: string, userData: any) => {
+  const login = (token: string, userData: User) => {
     localStorage.setItem(JWT_CONFIG.TOKEN_STORAGE_KEY, token);
     localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
     setUser(userData);
@@ -211,9 +239,9 @@ export const useAuth = () => {
   return context;
 };
 
-// 保護路由中間件
-export function withAuth<T extends React.JSX.IntrinsicAttributes>(Component: React.ComponentType<T>) {
-  return function ProtectedRoute(props: T) {
+// 保護路由中間件 - 修復 Next.js App Router 類型問題
+export function withAuth(Component: React.ComponentType): React.FC {
+  const ProtectedRoute: React.FC = () => {
     const { user, loading, tokenVerified } = useAuth();
     const router = useRouter();
 
@@ -231,6 +259,11 @@ export function withAuth<T extends React.JSX.IntrinsicAttributes>(Component: Rea
       );
     }
 
-    return user && tokenVerified ? <Component {...props} /> : null;
+    return user && tokenVerified ? <Component /> : null;
   };
+
+  // 設置顯示名稱以便於調試
+  ProtectedRoute.displayName = `withAuth(${Component.displayName || Component.name || 'Component'})`;
+  
+  return ProtectedRoute;
 }
