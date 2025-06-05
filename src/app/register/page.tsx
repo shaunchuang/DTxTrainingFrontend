@@ -88,7 +88,7 @@ export default function Register() {
           password: formData.password,
           captcha: formData.captcha
         }),
-        credentials: "include", // 確保發送會話 cookies
+        credentials: "include", // 需要保留，因為註冊也需要驗證碼驗證
       });
 
       const data = await response.json();

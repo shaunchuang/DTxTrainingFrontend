@@ -29,9 +29,13 @@ export default function Home() {
       router.push("/dashboard");
     }
   }, [user, tokenVerified, router]);
-
   // Function to refresh captcha
   const refreshCaptcha = async () => {
+    // 如果已經在載入中，不要重複請求
+    if (captchaLoading) {
+      return;
+    }
+    
     setCaptchaLoading(true);
 
     // 檢查 API 基礎 URL 是否配置（檢查環境變數是否設定）
@@ -42,15 +46,23 @@ export default function Home() {
       setCaptchaLoading(false);
       return;
     }
-    // Add timestamp to avoid caching
+    
+    // 添加一個錯誤計數器
     const timestamp = new Date().getTime();
     // 使用相對路徑，以便通過 Next.js rewrites 功能代理請求
     setCaptchaUrl(`/security/api/captcha?t=${timestamp}`);
     // Clear captcha input when refreshing
     setCaptcha("");
 
-    // Wait for image to load
+    // 設置載入超時
+    const timeoutId = setTimeout(() => {
+      console.warn("Captcha loading timeout");
+      setCaptchaLoading(false);
+    }, 5000); // 5秒後超時
+
+    // 正常完成時清除超時
     setTimeout(() => {
+      clearTimeout(timeoutId);
       setCaptchaLoading(false);
     }, 500);
   };
@@ -72,15 +84,13 @@ export default function Home() {
           type: "error"
         });
         return;
-      }
-      // 使用相對路徑，通過 Next.js rewrites 代理 API 請求
-      const response = await fetch('/security/api/login', {
+      }      const response = await fetch('/security/api/login', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ account, password, captcha }),
-        credentials: "include", 
+        body: JSON.stringify({ account, password, captcha })
+        // 不使用 credentials: "include"，改為完全依賴 JWT token
       });
 
       const data = await response.json();
@@ -90,6 +100,7 @@ export default function Home() {
         console.log("Login successful:", data);
         // 使用認證上下文存儲用戶信息和token
         if (data.token && data.user) {
+          console.log("datauser", data.user);
           login(data.token, data.user);
 
           // 登入成功後導航到儀表板頁面
@@ -211,8 +222,7 @@ export default function Home() {
                   />
                 </div>                <div className="flex items-center">
                   {captchaUrl ? (
-                    <div className="relative">
-                      <img
+                    <div className="relative">                      <img
                         src={captchaUrl}
                         alt="驗證碼"
                         width={100}
@@ -220,7 +230,11 @@ export default function Home() {
                         crossOrigin="use-credentials"
                         style={{ cursor: "pointer", borderRadius: 8, border: "1px solid #ddd" }}
                         onClick={refreshCaptcha}
-                        onError={refreshCaptcha}
+                        onError={(e) => {
+                          console.warn("驗證碼載入失敗");
+                          // 不再自動重試，避免無限循環
+                          e.currentTarget.onerror = null;
+                        }}
                       />
                       {captchaLoading && (
                         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">

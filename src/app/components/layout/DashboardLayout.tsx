@@ -34,7 +34,6 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>('');
   const pathname = usePathname();
-  console.log('DashboardLayout user:', user);
   // 添加參考點，用於檢測點擊事件
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
@@ -232,6 +231,8 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   
   // 點擊外部區域關閉選單 - 使用更穩健的實現方式
   useEffect(() => {
+    console.log("Checking user authentication status...");
+    console.log("User:", user);
     // 使用泛型 Event 作為基礎類型，避免類型錯誤
     const handleClickOutside = (event: Event) => {
       // 檢查用戶下拉選單

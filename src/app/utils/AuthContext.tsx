@@ -70,14 +70,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try {
               // 直接調用API而不是使用refreshUser以避免依賴問題
               const response = await fetch(SECURITY_API.USER, {
-                headers: getAuthHeaders()
-              });
-
-              if (response.ok) {
-                const userData = await response.json();
-                localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
-                setUser(userData);
-                setTokenVerified(true);
+                method: 'GET',
+                headers: getAuthHeaders(),
+              });              if (response.ok) {
+                const responseData = await response.json();
+                console.log("API response during init:", responseData);
+                
+                // 後端回應結構: { user: UserRoleDTO, token: string, message: string, success: boolean }
+                if (responseData.success && responseData.user) {
+                  localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(responseData.user));
+                  
+                  // 若後端也回傳新的 token，也一併更新
+                  if (responseData.token) {
+                    localStorage.setItem(JWT_CONFIG.TOKEN_STORAGE_KEY, responseData.token);
+                  }
+                  
+                  console.log("User data refreshed successfully:", responseData.user);
+                  setUser(responseData.user);
+                  setTokenVerified(true);
+                } else {
+                  console.warn("Invalid user data structure during init:", responseData);
+                  setUser(null);
+                  removeToken();
+                  localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
+                }
               } else {
                 // token無效或過期，清除用戶資料
                 setUser(null);
@@ -113,14 +129,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userData);
     setTokenVerified(true);
   };
-
   // 登出
   const logout = async () => {
     try {
-      // 調用登出API (後端可能不需要處理JWT登出)
+      // 調用登出API (JWT 方式不需要後端處理登出，只需要前端移除 token)
+      // 如果後端需要記錄登出事件，可以保留這個請求
       await fetch(SECURITY_API.LOGOUT, {
         method: 'POST',
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
+        credentials: "include",
       });
     } catch (error) {
       console.error("Logout error:", error);
@@ -133,9 +150,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // 轉到登入頁
       router.push('/');
     }
-  };
-
-  // 改進 refreshUser 函數
+  };  // 改進 refreshUser 函數，與後端回應結構對應
   const refreshUser = async () => {
     try {
       const token = getToken();
@@ -145,13 +160,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return null;
       }
       const response = await fetch(SECURITY_API.USER, {
-        headers: getAuthHeaders()
+        method: 'GET',
+        headers: getAuthHeaders(),
+        // 不使用 credentials: "include"，完全依賴 JWT token
       });
       if (response.ok) {
-        const userData = await response.json();
-        localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
-        setUser(userData);
-        return userData as UserRoleDTO;
+        const responseData = await response.json();
+        console.log("API response:", responseData);
+        
+        // 後端回應結構: { user: UserRoleDTO, token: string, message: string, success: boolean }
+        if (responseData.success && responseData.user) {
+          // 只存儲 user 物件到 localStorage，不保存整個回應
+          localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(responseData.user));
+          
+          // 若後端也回傳新的 token，也一併更新
+          if (responseData.token) {
+            localStorage.setItem(JWT_CONFIG.TOKEN_STORAGE_KEY, responseData.token);
+          }
+          
+          console.log("User data refreshed successfully:", responseData.user);
+          setUser(responseData.user);
+          return responseData.user as UserRoleDTO;
+        } else {
+          // 回應成功但資料結構不符預期
+          console.warn("Invalid user data structure:", responseData);
+          return null;
+        }
       } else if (response.status === 401) {
         // Token已過期，嘗試刷新token
         const refreshSuccess = await refreshToken();
@@ -183,13 +217,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return null;
     }
   };
-
   // 增加 refreshToken 函數
   const refreshToken = async () => {
     try {
       const response = await fetch(SECURITY_API.REFRESH_TOKEN, {
         method: 'POST',
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
       });
       
       if (response.ok) {
@@ -215,7 +248,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  // 現在已經不需要檢查 undefined，因為我們提供了默認值
   return context;
 };
 
