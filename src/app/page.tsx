@@ -22,6 +22,9 @@ export default function Home() {
 
   // 如果用戶已登入且token已驗證，直接轉到儀表板
   useEffect(() => {
+    console.log("Checking user authentication status...");
+    console.log("User:", user);
+    console.log("Token Verified:", tokenVerified);
     if (user && tokenVerified) {
       router.push("/dashboard");
     }
@@ -77,14 +80,14 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ account, password, captcha }),
-        credentials: "include", // 使用代理時可以保留憑證
+        credentials: "include", 
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         setMessage({ text: "登入成功，正在重定向...", type: "success" });
-
+        console.log("Login successful:", data);
         // 使用認證上下文存儲用戶信息和token
         if (data.token && data.user) {
           login(data.token, data.user);

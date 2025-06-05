@@ -34,7 +34,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState<string>('');
   const pathname = usePathname();
-  
+  console.log('DashboardLayout user:', user);
   // 添加參考點，用於檢測點擊事件
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
@@ -367,7 +367,11 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
                     <div className={`absolute right-0 mt-2 w-48 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg shadow-xl border z-20`}>
                       <div className="p-4 border-b border-gray-200">
                         <p className="text-sm font-medium">{user?.username || '使用者'}</p>
-                        <p className="text-xs text-gray-500">{user?.roles[0]?.description || '一般用戶'}</p>
+                        <p className="text-xs text-gray-500">
+                          {user?.roles && Array.isArray(user.roles) && user.roles[0]?.description
+                            ? user.roles[0].description
+                            : '一般用戶'}
+                        </p>
                       </div>
                       <div className="py-2">
                         <button className={`w-full text-left px-4 py-2 text-sm ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>

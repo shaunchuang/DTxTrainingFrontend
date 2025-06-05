@@ -357,7 +357,7 @@ export default function MultiStepFormPage() {
                 <div className={styles.userDropdown}>
                   <div className={styles.userDropdownHeader}>
                     <p className={styles.userDropdownName}>{user?.username || '使用者'}</p>
-                    <p className={styles.userDropdownRole}>{user?.roles?.[0] || '一般用戶'}</p>
+                    <p className={styles.userDropdownRole}>{user?.roles?.[0]?.description || '一般用戶'}</p>
                   </div>
                   <div className={styles.userDropdownContent}>
                     {/* 個人資料按鈕已註解

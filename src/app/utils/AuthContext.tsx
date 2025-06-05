@@ -13,7 +13,7 @@ interface Role {
 }
 
 // 對應後端 UserRoleDTO
-interface User {
+interface UserRoleDTO {
   id: number;
   username: string;
   account: string;
@@ -21,18 +21,19 @@ interface User {
   telCell?: string;
   steamId?: string;
   createdTime?: string | Date;
+  lastLoginDate?: string | Date;
   status: string; // UserStatus 可細分型別
   roles: Role[];
 }
 
 // 更新 AuthContextType 介面並將其提前
 interface AuthContextType {
-  user: User | null;
+  user: UserRoleDTO | null;
   loading: boolean;
   tokenVerified: boolean;
-  login: (token: string, userData: User) => void;
+  login: (token: string, userData: UserRoleDTO) => void;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<User | null>; // 修改返回類型以匹配實際實現
+  refreshUser: () => Promise<UserRoleDTO | null>; // 修改返回類型以匹配實際實現
 }
 
 // 創建 Context 時提供正確的默認值，避免 undefined
@@ -46,7 +47,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserRoleDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [tokenVerified, setTokenVerified] = useState(false);
   const router = useRouter();  // 初始化認證狀態
@@ -57,18 +58,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (token) {
           // 嘗試從localStorage獲取用戶資料
           const storedUser = localStorage.getItem(JWT_CONFIG.USER_STORAGE_KEY);
-          
           if (storedUser) {
-            // 暫時設置用戶資料，但不認為已驗證
             setUser(JSON.parse(storedUser));
           }
-            // 檢查 API URL 是否配置 - 在使用相對路徑進行代理請求的情況下不需要此檢查
+          // 檢查 API URL 是否配置 - 在使用相對路徑進行代理請求的情況下不需要此檢查
           if (!CASEMGNT_API_BASE_URL) {
             console.warn("API URL not configured, skipping token verification");
-            // 如果沒有配置 API URL，在開發模式下允許使用存儲的用戶數據
-            if (storedUser && process.env.NODE_ENV === 'development') {
-              setTokenVerified(true);
-            }
+            // 不再允許開發模式下直接設為已驗證
           } else {
             // 驗證token有效性，等待結果完成
             try {
@@ -90,16 +86,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               }
             } catch (err) {
               console.warn("Could not refresh user data during init (API server may be down):", err);
-              // 在開發模式下，如果有存儲的用戶數據，允許離線使用
-              if (storedUser && process.env.NODE_ENV === 'development') {
-                console.info("Using offline mode with stored user data");
-                setTokenVerified(true);
-              } else {
-                // token驗證失敗，清除認證資訊
-                setUser(null);
-                removeToken();
-                localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
-              }
+              // token驗證失敗，清除認證資訊
+              setUser(null);
+              removeToken();
+              localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
             }
           }
         }
@@ -117,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []); // 移除refreshUser依賴
   // 登入並設置用戶資訊
-  const login = (token: string, userData: User) => {
+  const login = (token: string, userData: UserRoleDTO) => {
     localStorage.setItem(JWT_CONFIG.TOKEN_STORAGE_KEY, token);
     localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
     setUser(userData);
@@ -154,16 +144,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.warn("No token found when refreshing user.");
         return null;
       }
-      
       const response = await fetch(SECURITY_API.USER, {
         headers: getAuthHeaders()
       });
-
       if (response.ok) {
         const userData = await response.json();
         localStorage.setItem(JWT_CONFIG.USER_STORAGE_KEY, JSON.stringify(userData));
         setUser(userData);
-        return userData;
+        return userData as UserRoleDTO;
       } else if (response.status === 401) {
         // Token已過期，嘗試刷新token
         const refreshSuccess = await refreshToken();
@@ -181,25 +169,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         // 其他HTTP錯誤（包括500）
         console.error(`Server returned error ${response.status} when refreshing user.`);
-        
-        // 對於500錯誤，我們不一定要登出用戶，可以保留其本地狀態
-        // 只記錄錯誤並返回null
         if (response.status >= 500) {
           console.warn("Server error detected, keeping existing user state.");
           return null;
         }
-        
-        // 對於其他錯誤，清除認證狀態
         removeToken();
         localStorage.removeItem(JWT_CONFIG.USER_STORAGE_KEY);
         setUser(null);
         return null;
       }
     } catch (error) {
-      // 網絡錯誤或其他異常
       console.error("Error refreshing user data:", error);
-      // 對於網絡錯誤，我們不一定要登出用戶
-      // 只記錄錯誤並返回null，保留現有認證狀態
       return null;
     }
   };
